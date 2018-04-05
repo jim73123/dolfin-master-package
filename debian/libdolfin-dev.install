@@ -1,0 +1,5 @@
+usr/include/dolfin
+usr/include/dolfin.h
+usr/lib/**/*.so
+usr/lib/**/pkgconfig/dolfin.pc
+usr/share/dolfin/cmake

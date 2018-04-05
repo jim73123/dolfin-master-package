@@ -1,0 +1,134 @@
+#!/usr/bin/make -f
+
+DEB_SOURCE_PACKAGE := $(strip $(shell egrep '^Source: ' debian/control | cut -f 2 -d ':'))
+DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+DEB_NOEPOCH_VERSION := $(shell echo $(DEB_VERSION) | cut -d: -f2-)
+DEB_UPSTREAM_VERSION := $(shell echo $(DEB_NOEPOCH_VERSION) | sed 's/-[^-]*$$//')
+DEB_STRIPPED_UPSTREAM_VERSION = $(shell echo $(DEB_UPSTREAM_VERSION) | sed -e 's/\+dfsg.*$$//p')
+
+FENICS_RELEASE_VERSION=$(DEB_STRIPPED_UPSTREAM_VERSION)
+FENICS_MAJOR_VERSION=$(shell echo $(FENICS_RELEASE_VERSION) | sed "s/^\([^.]*\)\..*$$/\1/")
+FENICS_MINOR_VERSION=$(shell echo $(FENICS_RELEASE_VERSION) | sed "s/^\([^.]*\)\.\([^.]*\)\..*$$/\2/")
+FENICS_VERSION=$(FENICS_MAJOR_VERSION).$(FENICS_MINOR_VERSION)
+FENICS_NEXT_VERSION=$(FENICS_MAJOR_VERSION).$(shell echo $$(( $(FENICS_MINOR_VERSION) + 1 )) )
+
+# Disable tests for now. DOLFIN requires the library to be built *and
+# installed* first, then the tests are built against the installation. Not sure
+# how to handle this here.
+# TODO enable
+DEB_BUILD_OPTIONS=nocheck
+
+# Allow test programs that uses OpenMPI to run
+export OMPI_MCA_plm_rsh_agent=/bin/false
+
+DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+
+# Disable MPI on lam architectures
+include /usr/share/mpi-default-dev/debian_defaults
+ifeq ($(findstring $(DEB_BUILD_ARCH),$(OPENMPI_ARCHITECTURES)),)
+ENABLE_MPI=OFF
+else
+ENABLE_MPI=ON
+endif
+
+BUILDDIR = $(CURDIR)/debian/build
+DOLFIN_HOME = $(CURDIR)/$(DEB_SRCDIR)
+USCAN_DESTDIR := $(CURDIR)
+PY3VERS := $(shell py3versions --requested debian/control | tac -s' ')
+PYVERS = $(PY3VERS)
+
+# extract PETSc version from petsc-dev
+PETSC_DEB_VERSION=$(shell dpkg -s petsc-dev | awk '/Version:/ {print $2}')
+# extract the current PETSc version
+PETSC_UPSTREAM_VERSION=$(shell pkg-config --modversion PETSc)
+# "Major" version is the first number in the upstream version (major.minor.release)
+PETSC_MAJOR_VERSION=$(shell echo $(PETSC_UPSTREAM_VERSION) | sed "s/^\([^.]*\)\..*$$/\1/")
+# "Minor" version is the second number in the upstream version (major.minor.release)
+PETSC_MINOR_VERSION=$(shell echo $(PETSC_UPSTREAM_VERSION) | sed "s/^\([^.]*\)\.\([^.]*\)\..*$$/\2/")
+PETSC_VERSION=$(PETSC_MAJOR_VERSION).$(PETSC_MINOR_VERSION)
+PETSC_VERSION_NEXT=$(shell echo $(PETSC_MAJOR_VERSION).$$(($(PETSC_MINOR_VERSION)+1)))
+
+SLEPC_UPSTREAM_VERSION=$(shell pkg-config --modversion SLEPc)
+# SLEPc version must match PETSc
+SLEPC_VERSION=$(PETSC_VERSION)
+SLEPC_VERSION_NEXT=$(PETSC_VERSION_NEXT)
+
+PETSC_DIR=/usr/lib/petscdir/$(PETSC_VERSION)-real
+SLEPC_DIR=/usr/lib/slepcdir/$(SLEPC_VERSION)-real
+
+CMAKE_OPTS := \
+	-D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+	-D BUILD_SHARED_LIBS:BOOL=ON \
+	-D CMAKE_SKIP_RPATH:BOOL=ON \
+	-D CMAKE_INSTALL_RPATH_USE_LINK_PATH:BOOL=OFF \
+	-D DOLFIN_ENABLE_TRILINOS:BOOL=OFF \
+	-D DOLFIN_ENABLE_HDF5:BOOL=ON \
+	-D HDF5_C_COMPILER_EXECUTABLE:FILEPATH=/usr/bin/h5pcc \
+	-D DOLFIN_ENABLE_PARMETIS:BOOL=OFF \
+	-D DOLFIN_ENABLE_SCOTCH:BOOL=ON \
+	-D DOLFIN_ENABLE_DOCS:BOOL=OFF \
+	-D DOLFIN_ENABLE_MPI:BOOL=$(ENABLE_MPI) \
+	-D PETSC_DIR:PATH=$(PETSC_DIR) \
+	-D SLEPC_DIR:PATH=$(SLEPC_DIR) \
+	-D DOLFIN_LIB_DIR:PATH=lib/$(DEB_BUILD_MULTIARCH) \
+	-D DOLFIN_PKGCONFIG_DIR:PATH=lib/$(DEB_BUILD_MULTIARCH)/pkgconfig \
+	-D CMAKE_CXX_FLAGS:STRING="-fpermissive" \
+	$(DOLFIN_HOME)
+
+%:
+	dh $@ --buildsystem=cmake --with python3
+
+override_dh_compress:
+	dh_compress -X.py -X.cpp -X.h -X.pdf -X.ufl
+
+override_dh_auto_clean:
+	for v in $(PYVERS); do \
+	    dh_auto_clean --builddirectory=$(BUILDDIR)-$$v; \
+	done
+
+override_dh_auto_configure:
+	for v in $(PYVERS); do \
+	    dh_auto_configure --builddirectory=$(BUILDDIR)-$$v -- \
+	       -D PYTHON_EXECUTABLE:FILEPATH=/usr/bin/$$v \
+	       -- $(CMAKE_OPTS) ;\
+	done
+
+override_dh_auto_build:
+	for v in $(PYVERS); do \
+	   dh_auto_build --builddirectory=$(BUILDDIR)-$$v; \
+	done
+
+override_dh_auto_install:
+	for v in $(PYVERS); do \
+	   dh_auto_install --builddirectory=$(BUILDDIR)-$$v; \
+	done
+	dh_numpy3
+	sed -i "s/-D_FORTIFY_SOURCE=2//g" $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/pkgconfig/dolfin.pc
+	sed -i "s|-DNDEBUG||g" $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/pkgconfig/dolfin.pc
+
+override_dh_auto_test:
+	for v in $(PYVERS); do \
+	   dh_auto_test --builddirectory=$(BUILDDIR)-$$v; \
+	done
+
+# set petsc:Depends to something like "libpetsc-real3.8-dev, libslepc-real3.8-dev, python-petsc4py (>= 3.8), python-petsc4py (<< 3.9), python-slepc4py (>= 3.8), python-slepc4py (<< 3.9)"
+PETSC_DEV_DEPENDS="libpetsc-real$(PETSC_VERSION)-dev | libpetsc$(PETSC_UPSTREAM_VERSION)-dev, libslepc-real$(SLEPC_VERSION)-dev | libslepc$(SLEPC_UPSTREAM_VERSION)-dev"
+# slepc4py version must match petsc4py (using the PETSc minor version, not the patch release)
+PETSC4PY_DEPENDS_PY3=python3-petsc4py (>= $(PETSC_VERSION)), python3-petsc4py (<< $(PETSC_VERSION_NEXT)), python3-slepc4py (>= $(SLEPC_VERSION)), python3-slepc4py (<< $(SLEPC_VERSION_NEXT))
+override_dh_gencontrol:
+	echo "python3-petsc4py:Depends=$(PETSC4PY_DEPENDS_PY3)" >> debian/python3-dolfin.substvars
+	echo "python-petsc4py-alt:Depends=$(PETSC4PY_DEPENDS_PY3)" >> debian/libdolfin-dev.substvars
+	dh_gencontrol -- -Vpetsc:Depends=$(PETSC_DEV_DEPENDS) -Vfenics:Upstream-Version=$(FENICS_VERSION) -Vfenics:Next-Upstream-Version=$(FENICS_NEXT_VERSION)~
+
+override_dh_strip:
+	dh_strip --package=libdolfin$(FENICS_VERSION) --dbgsym-migration='libdolfin2017.2-dbg (<< 2017.2.0.post0-1~)' -Xpython
+	dh_strip --package=python3-dolfin --dbgsym-migration='python3-dolfin-dbg (<< 2017.2.0.post0-1~)' -Xpython2
+
+override_dh_installman:
+	dh_installman
+
+
+.PHONY: get-orig-source override_dh_strip
+get-orig-source:
+	uscan --force-download --verbose --destdir $(USCAN_DESTDIR)

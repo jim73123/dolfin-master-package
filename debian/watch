@@ -1,0 +1,4 @@
+version=4
+opts=downloadurlmangle=s{downloads/.*dolfin-}{downloads/dolfin-},\
+pgpsigurlmangle=s/$/.asc/ \
+https://bitbucket.org/fenics-project/dolfin/downloads/ .*/dolfin-(.*)\.tar\.gz

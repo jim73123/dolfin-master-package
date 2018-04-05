@@ -1,0 +1,898 @@
+dolfin (2017.2.0.post0-3ubuntu1) UNRELEASED; urgency=medium
+
+  * remove Python 2 package in preparation of 2018.1
+
+ -- Nico Schlömer <nico.schloemer@gmail.com>  Wed, 04 Apr 2018 18:01:26 +0200
+
+dolfin (2017.2.0.post0-3) unstable; urgency=medium
+
+  * update petsc/slepc dependencies for PETSc/SLEPc 3.8
+    (dev package now libpetsc-real3.8-dev not libpetsc3.8.3-dev)
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 04 Mar 2018 10:46:39 +0800
+
+dolfin (2017.2.0.post0-2) unstable; urgency=medium
+
+  * debian/control: update VCS tags to salsa.debian.org
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 22 Feb 2018 08:56:02 +0800
+
+dolfin (2017.2.0.post0-1exp2) experimental; urgency=medium
+
+  * reorganise debian/copyright: collect core DOLFIN files and
+    contributors in one entry.
+  * Remove -dbg packages from debian/control.
+    Debug packages (-dbgsym) are built automatically.
+
+ -- Drew Parsons <dparsons@debian.org>  Fri, 16 Feb 2018 15:34:44 +0800
+
+dolfin (2017.2.0.post0-1exp1) experimental; urgency=medium
+
+  * New upstream release.
+    - updated debian/upstream/signing-key.asc for signature
+      from the FEniCS Project Steering Council (key BED06106DD22BAB3)
+    - drops VTK support (no plots, but VTK files can still be created)
+    - update versions of Build-Dependencies:
+        cmake (>= 3.5), swig3.0 (>= 3.0.5),
+        petsc-dev (>= 3.7), slepc-dev (>= 3.7),
+        libboost-dev (>= 1.56), libeigen3-dev (>= 3.2.90)
+  * Standards-Version: 4.1.3
+  * Update debian.patches
+    - file encoding now included when reading files in python scripts
+    - VTK no longer supported
+  * debhelper compatibility level 11
+  * debian/control: Priority: optional not extra
+  * FEniCS version dependencies are taken as >=2017.2 and <=2017.3~
+    i.e. depend on major.minor version only
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 21 Jan 2018 21:21:52 +0800
+
+dolfin (2017.1.0-4) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream (new soname) version built against GCC7.
+    Closes: #871279.
+  * Builds against swig 3.0.12. Closes: #875395.
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 12 Sep 2017 15:45:48 +0800
+
+dolfin (2017.1.0-3) experimental; urgency=medium
+
+  * Team upload.
+  * Add debian/patches/FindPETScSLEPc.patch to test for PETSc and
+    SLEPc at build time. The patch ensures tests link against -lmpi.
+    Thanks Johannes Ring.
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 05 Sep 2017 01:20:24 +0800
+
+dolfin (2017.1.0-2) experimental; urgency=medium
+
+  * Team upload.
+  * Create debian patch conditional-parmetis-in-cholmod.patch to only
+    link cholmod support with parmetis if parmetis support is enabled.
+    Parmetis is non-free and therefore cannot routinely be supported
+    while dolfin is in Debian main.
+  * Standards-Version: 4.1.0
+  * debhelper compatibility level 10.
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 28 Aug 2017 23:26:11 +0800
+
+dolfin (2017.1.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * d/control:
+    - Update package names (libdolfin2016.2 -> libdolfin2017.1
+      and libdolfin2016.2-dbg -> libdolfin2017.1-dbg).
+    - Bump minimum required version for python-dijitso and python-ffc to
+      2017.1 in Build-Depends.
+  * Move d/libdolfin2016.2.install -> d/libdolfin2017.1.install.
+  * d/patches/python3-support.patch: removed (fixed upstream).
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 07 Jul 2017 11:24:50 +0200
+
+dolfin (2016.2.0-5) unstable; urgency=medium
+
+  * libdolfin-dev depends on either the python2 or python3 version of
+    modules (enables python3-only installation).
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 06 Jul 2017 15:21:57 +0800
+
+dolfin (2016.2.0-4) unstable; urgency=medium
+
+  [ Johannes Ring ]
+  * d/rules:
+    - Re-generate swig interface with correct Python version
+      before build and install. Closes: #863829.
+    - Build for Python 2 after Python 3 by switching the order in
+      PYVERS, since Python 2 is default.
+  * Add patch vtk-python2-only-cmake-usefile.patch that disables the
+    vtk section in UseDOLFIN.cmake for Python 3. Closes: #863828.
+  * d/control: Add python-ffc to Depends for binary package
+    libdolfin-dev (provides ufc.h).
+
+ -- Drew Parsons <dparsons@debian.org>  Wed, 07 Jun 2017 12:14:40 +0800
+
+dolfin (2016.2.0-3) unstable; urgency=medium
+
+  [ Drew Parsons ]
+  * Enable petsc/slepc dependencies on kfreebsd. Note that PETSc
+    support in dolfin on kfreebsd is not in fact active due to linking
+    problems during configuration tests, but dolfin builds
+    successfully without it. Closes: #822971.
+
+  [ Johannes Ring ]
+  * Support Python 3: new packages python3-dolfin and python3-dolfin-dbg.
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 30 May 2017 16:17:28 +0800
+
+dolfin (2016.2.0-2) unstable; urgency=medium
+
+  * Dolfin depends on specific 3.7.X patch releases of PETSc and SLEPc
+    (see dolfin.pc, DOLFINConfig.cmake)
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 24 Jan 2017 06:18:32 +0800
+
+dolfin (2016.2.0-1) unstable; urgency=medium
+
+  [ Drew Parsons ]
+  * Drop HDF5 Fortran configuration (it's not actually used).
+  * Tighten build and python-dolfin fenics dependencies to the
+    FENiCS minor version: (>= 2016.2.0), (<< 2016.3~)
+
+  [ Johannes Ring ]
+  * New upstream release.
+  * d/watch: Check pgp signature.
+  * d/control:
+    - Update package names (libdolfin2016.1 -> libdolfin2016.2
+      and libdolfin2016.1-dbg -> libdolfin2016.2-dbg).
+    - Bump minimum required version for python-instant, python-ufl and
+      python-ffc to 2016.2.
+    - Add python-dijitso to Build-Depends and Depends for binary package
+      python-dolfin.
+
+ -- Drew Parsons <dparsons@debian.org>  Wed, 21 Dec 2016 16:47:36 +0800
+
+dolfin (2016.1.0-5) unstable; urgency=medium
+
+  * Reenable HDF5 support.
+  * patches/HDF5-configure.patch helps configure HDF5 parallel.
+
+ -- Drew Parsons <dparsons@debian.org>  Fri, 16 Sep 2016 11:16:05 +0800
+
+dolfin (2016.1.0-4) unstable; urgency=medium
+
+  * Disable HDF5 support.  
+    HDF5 was never actually enabled previously due to a discrepant
+    configuration between serial and parallel HDF5, but that now
+    causes dolfin to fail to build.
+
+ -- Drew Parsons <dparsons@debian.org>  Wed, 14 Sep 2016 12:52:59 +0800
+
+dolfin (2016.1.0-3) unstable; urgency=medium
+
+  * Thanks Christophe Prud'homme for your uploads of the earlier
+    versions of dolfin.  Removing from the Uploaders list now.
+    Closes: #835003.
+  * enable parallel build (dh $@ --parallel). Closes: #833602.
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 12 Sep 2016 17:19:42 +0800
+
+dolfin (2016.1.0-2) unstable; urgency=medium
+
+  * Enable build against version of PETSc (and SLEPc) provided by
+    petsc-dev, e.g. PETSc 3.6 or 3.7.
+  * Include support for petsc4py and slepc4py.
+  * Update debian/watch (uscan).
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 11 Aug 2016 23:08:05 +0800
+
+dolfin (2016.1.0-1) unstable; urgency=medium
+
+  [ Johannes Ring ]
+  * New upstream release.
+  * debian/control:
+    - Update package names for new SONAME 2016.1 (libdolfin1.6 ->
+      libdolfin2016.1 and libdolfin1.6-dbg -> libdolfin2016.1-dbg).
+    - Bump minimum required version for python-instant, python-ufl and
+      python-ffc to 2016.1.
+  * Move debian/libdolfin1.6.install -> debian/libdolfin2016.1.install.
+  * debian/rules: Add -fpermissive to CXX flags.
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 05 Jul 2016 13:14:01 +0800
+
+dolfin (1.6.0-5) unstable; urgency=medium
+
+  * Depends: libpetsc3.6-dev rather than petsc-dev.
+    Likewise libslepc3.6-dev.
+    dolfin 1.6 is not compatible with petsc 3.7.
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 07 Jun 2016 09:11:42 +0800
+
+dolfin (1.6.0-4) unstable; urgency=medium
+
+  [ Mattia Rizzolo ]
+  * debian/control:
+    + Update VCS fields after the move to Git.
+
+  [ Drew Parsons ]
+  * Remove python-dolfin dependency on python-netcdf. Closes: #821215.
+  * Build against vtk6 not vtk5 (source and libdolfin-dev dependencies).
+    Requires Qt4 support to be switched off (vtk6 uses Qt5).
+    Qt support has been dropped upstream. Closes: #821875. 
+  * Activate support for SCOTCH.
+  * Standards-Version: 3.9.8
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 26 Apr 2016 23:59:41 +0800
+
+dolfin (1.6.0-3) unstable; urgency=medium
+
+  * Team upload.
+  * Use OPENMPI_ARCHITECTURES from mpi-default-dev instead of hardcoding
+    architectures where not to use openmpi.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Thu, 21 Apr 2016 15:33:43 +0000
+
+dolfin (1.6.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * Run wrap-and-sort -s
+  * Switch to unversioned Build-Depends on petsc-dev and slepc-dev (also for
+    the libdolfin-dev dependencies).
+
+ -- Mattia Rizzolo <mattia@debian.org>  Thu, 21 Apr 2016 13:32:44 +0000
+
+dolfin (1.6.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Add gfortran to build dependencies.
+    - Update package names for new SONAME 1.6 (libdolfin1.5 ->
+      libdolfin1.6 and libdolfin1.5-dbg -> libdolfin1.6-dbg).
+    - Bump minimum required version for python-instant, python-ufl and
+      python-ffc to 1.6.0.
+    - Require swig3.0 (>= 3.0.3) in Build-Depends.
+  * Move debian/libdolfin1.5.install -> debian/libdolfin1.6.install.
+  * Remove patch for fixing problem with Python 2.7.10 (fixed upstream).
+  * debian/rules:
+    - Replace swig with swig3.0.
+    - Set PETSC_DIR to /usr/lib/petsc and SLEPC_DIR to /usr/lib/slepc.
+    - Explicitly disable petsc4py, slepc4py and sphinx.
+    - Help CMake find the parallel version of hdf5.
+
+ -- Johannes Ring <johannr@simula.no>  Sat, 31 Oct 2015 13:30:16 +0800
+
+dolfin (1.5.0-4) unstable; urgency=medium
+
+  * debian/control: Enable libpetsc3.2-dev and libslepc3.2-dev on
+    armel, arm64 and hurd-i386 (closes: #787494).
+  * debian/rules: Enable MPI on armel.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 02 Jun 2015 12:39:45 +0200
+
+dolfin (1.5.0-3) unstable; urgency=medium
+
+  * Add patch to fix issue with Python 2.7.10 (closes: #786857).
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 01 Jun 2015 09:26:07 +0200
+
+dolfin (1.5.0-2) unstable; urgency=medium
+
+  * Upload to unstable (closes: #780359).
+
+ -- Johannes Ring <johannr@simula.no>  Wed, 13 May 2015 09:48:59 +0200
+
+dolfin (1.5.0-1) experimental; urgency=medium
+
+  * New upstream release (closes: #780359).
+  * debian/control:
+    - Bump Standards-Version to 3.9.6 (no changes needed).
+    - Bump X-Python-Version to >= 2.7.
+    - Update package names for new SONAME 1.5 (libdolfin1.4 ->
+      libdolfin1.5, libdolfin1.4-dbg -> libdolfin1.5-dbg and
+      libdolfin1.4-dev -> libdolfin1.5-dev).
+    - Bump minimum required version for python-instant, python-ufl and
+      python-ffc to 1.5.0.
+    - Add python-sympy and python-six to Depends for binary package
+      python-dolfin.
+    - Add dh-python to Build-Depends.
+    - Remove libcgal-dev from {Build-}Depends.
+  * Remove CSGCGALMeshGenerator3D-oom.patch since CGAL is no longer used
+    by DOLFIN.
+  * Move debian/libdolfin1.4.install -> debian/libdolfin1.5.install.
+  * debian/rules: No longer any non DFSG-free stuff to remove, so update
+    get-orig-source target (update debian/watch accordingly).
+  * Update debian/copyright and debian/copyright_hints.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 17 Mar 2015 07:57:11 +0100
+
+dolfin (1.4.0+dfsg-4) unstable; urgency=medium
+
+  * debian/control: Disable libcgal-dev on i386, mipsel and sparc.
+  * debian/rules: Remove bad directives in pkg-config file dolfin.pc
+    (closes: #760658).
+  * Remove debian/libdolfin-dev.lintian-overrides.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 22 Sep 2014 14:35:34 +0200
+
+dolfin (1.4.0+dfsg-3) unstable; urgency=medium
+
+  * debian/rules: Enable MPI on mips(el) and sparc (closes: #759182).
+  * debian/control:
+    - Disable libcgal-dev on {hurd, kfreebsd}-i386 since it requires
+      unreasonable amounts of memory (closes: #759183).
+    - Disable libpetsc3.4.2-dev and libslepc3.4.2-dev on amr64 since
+      they are not available on this architecture.
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 29 Aug 2014 08:28:19 +0200
+
+dolfin (1.4.0+dfsg-2) unstable; urgency=medium
+
+  * Rename libdolfin1.4-dev to libdolfin-dev and remove dolfin-dev.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 18 Aug 2014 10:21:43 +0200
+
+dolfin (1.4.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Update package names for new SONAME 1.3 (libdolfin1.3 ->
+      libdolfin1.4, libdolfin1.3-dbg -> libdolfin1.4-dbg and
+      libdolfin1.3-dev -> libdolfin1.4-dev).
+    - Bump minimum required version for python-instant, python-ufl and
+      python-ffc to 1.4.0.
+    - Add python-ffc (>= 1.4.0) to Build-Depends.
+    - Replace swig2.0 with swig in Build-Depends.
+    - Remove ufc and python-ufc from Build-Depends and from Depends for
+      binary package libdolfin1.4-dev and python-dolfin (closes: #755727).
+    - Add libdolfin1.3-dev in Conflicts and Replaces for binary package
+      libdolfin1.4-dev.
+    - Remove libarmadillo-dev from {Build-}Depends.
+    - Remove libptscotch-dev from {Build-}Depends (closes: #741165).
+  * Move debian/libdolfin1.3.install -> debian/libdolfin1.4.install
+    and debian/libdolfin1.3-dev.install -> debian/libdolfin1.4-dev.install.
+  * debian/rules:
+    - Enable CGAL again (accidentally disabled in last upload).
+    - No longer needed to remove .pyc files in get-orig-source target.
+    - Add "export PERL_LWP_SSL_VERIFY_HOSTNAME=0" to get-orig-source
+      target to help uscan download from Bitucket.
+  * Remove patch for bug in Boost (fixed).
+  * Add lintian override libdolfin1.4-dev: pkg-config-bad-directive.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 11 Aug 2014 09:57:36 +0200
+
+dolfin (1.3.0+dfsg-2) unstable; urgency=medium
+
+  * debian/control:
+    - Disable libcgal-dev on armhf and mips since it requires
+      unreasonable amounts of memory (closes: 739697).
+    - Disable libpetsc3.4.2-dev and libslepc3.4.2-dev on hurd-i386 since
+      they are not available on this architecture.
+  * Add patch to workaround bug in boost (thanks to Peter Green).
+  * Use DEB_BUILD_MULTIARCH when installing the DOLFIN library and
+    pkg-config file.
+
+ -- Johannes Ring <johannr@simula.no>  Wed, 26 Feb 2014 12:23:11 +0100
+
+dolfin (1.3.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Remove patches for PETSc/SLEPc 3.4 (no longer needed).
+  * debian/docs: README -> README.rst and remove TODO.
+  * debian/control:
+    - Bump Standards-Version to 3.9.5 (no changes needed).
+    - Add libeigen3-dev in Build-Depends and Depends for binary package
+      libdolfin1.3-dev.
+    - Add python-ply in Build-Depends.
+    - Update package names for new SONAME 1.3 (libdolfin1.2 ->
+      libdolfin1.3, libdolfin1.2-dbg -> libdolfin1.3-dbg and
+      libdolfin1.2-dev -> libdolfin1.3-dev).
+    - Bump minimum required version for ufc and python-ufc to 2.3.0, and
+      for python-instant, python-ufl and python-ffc to 1.3.0.
+    - Add libdolfin1.2-dev in Conflicts and Replaces for binary package
+      libdolfin1.3-dev.
+    - Add python-ply in Build-Depends.
+  * Move debian/libdolfin1.2.install -> debian/libdolfin1.3.install
+    and debian/libdolfin1.2-dev.install -> debian/libdolfin1.3-dev.install.
+  * debian/libdolfin1.3-dev.install: Remove pkg-config file dolfin.pc
+    (cmake files should be used instead).
+  * debian/rules: Remove .pyc files in get-orig-source target.
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 14 Feb 2014 19:11:50 +0100
+
+dolfin (1.2.0+dfsg-4) unstable; urgency=medium
+
+  * Team upload.
+  * CSGCGALMeshGenerator3D-oom.patch: new patch, workaround for FTBFS on some
+    arches due to g++ eating all the RAM.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sat, 14 Dec 2013 19:16:13 +0100
+
+dolfin (1.2.0+dfsg-3) unstable; urgency=low
+
+  * Team upload.
+  * Refactor patches for PETSc/SLEPc 3.4, to fix a missing symbol in the library
+    + petsc-slepc-3.4.2.patch: remove patch
+    + {slepc,petsc}-3.4.patch: new patches taken from upstream
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sun, 27 Oct 2013 15:48:52 +0100
+
+dolfin (1.2.0+dfsg-2) unstable; urgency=low
+
+  * Team upload.
+  * Update (build-)dependencies to libpetsc3.4.2-dev and
+    libslepc3.4.2-dev.
+  * petsc-slepc-3.4.2.patch: new patch to adapt for the new PETSC/SLEPC.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sat, 26 Oct 2013 04:33:36 +0200
+
+dolfin (1.2.0+dfsg-1) unstable; urgency=low
+
+  * New upstream release (closes: #718636, #718153).
+  * debian/control:
+    - Replace libdolfin1.1 with libdolfin1.2 and libdolfin1.1-dev with
+      libdolfin1.2-dev to follow library soname.
+    - Bump required version for ufc, python-ufc, python-ffc, python-ufl,
+      and python-instant.
+    - Add libdolfin1.1-dev to Conflicts and Replaces for binary package
+      libdolfin1.2-dev.
+    - Bump Standards-Version to 3.9.4.
+    - Remove DM-Upload-Allowed field.
+    - Bump required debhelper version in Build-Depends.
+    - Replace python-all-dev with python-dev in Build-Depends.
+    - Remove cdbs from Build-Depends.
+    - Use canonical URIs for Vcs-* fields.
+    - Disable libcgal-dev on armel.
+    - Enable libpetsc3.2-dev and libslepc3.2-dev on armhf and s390x.
+    - Enable libptscotch-dev on all arches.
+    - Add new debug package python-dolfin-dbg.
+  * debian/compat: Bump to compatibility level 9.
+  * debian/rules:
+    - Rewrite for debhelper (drop cdbs).
+    - Avoid hardcoding the swig2.0 version (closes: #692852).
+    - Update get-orig-source target to remove non DFSG-free stuff,
+      update watch file accordingly.
+  * Update debian/copyright and debian/copyright_hints.
+  * Move debian/libdolfin1.1.install to debian/libdolfin1.2.install and
+    debian/libdolfin1.1-dev.install to debian/libdolfin1.2-dev.install
+    to follow library soname.
+  * Add dolfin-get-demos in dolfin-bin.install and add manual page for it.
+  * Add all CMake files in libdolfin1.2-dev.install.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 06 Aug 2013 16:49:23 +0200
+
+dolfin (1.1.0-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    - Replace libdolfin1.0 with libdolfin1.1 and libdolfin1.0-dev with
+      libdolfin1.1-dev to follow library soname.
+    - Bump required version for ufc, python-ufc, python-ffc, python-ufl,
+      and python-instant.
+    - Add libdolfin1.0-dev to Conflicts and Depends for binary package
+      libdolfin1.1-dev.
+    - Add libvtk5-dev, libvtk5-qt4-dev, libqt4-dev, libhdf5-mpi-dev,
+      libboost-timer-dev and libboost-chrono-dev to Build-Depends and in
+      Depends field for binary package libdolfin1.1-dev.
+    - Add python-ply to Depends for binary package python-dolfin.
+    - Remove python-viper from Depends for binary package python-dolfin.
+  * debian/rules: Enable building with HDF5, VTK, and QT.
+  * Move debian/libdolfin1.0.install to debian/libdolfin1.1.install and
+    debian/libdolfin1.0-dev.install to debian/libdolfin1.1-dev.install
+    to follow library soname.
+  * debian/patches: Remove patches now fixed upstream.
+  * Determine swig2.0 version at build time (closes: #692852). Thanks to
+    Stefano Riviera for the patch.
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 10 Jan 2013 11:28:21 +0100
+
+dolfin (1.0.0-7) unstable; urgency=low
+
+  * debian/control:
+    - Remove Conflicts and Replaces from binary package libdolfin1.0-dbg.
+    - Update long description for all packages.
+    - Add python-netcdf to Depends for binary package python-dolfin
+      (closes: #674014).
+    - Require SWIG upstream version 2.0.7 for binary package
+      python-dolfin (closes: #675207).
+    - Require UFC >= 2.0.5-3.
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 29 Jun 2012 09:45:28 +0200
+
+dolfin (1.0.0-6) unstable; urgency=low
+
+  * debian/rules: Set default Python version to fix FTBFS when Python3
+    is available (closes: #672952).
+  * debian/control: Remove Provides: libdolfin0-dev from
+    libdolfin1.0-dev (and same to -dbg package).
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 21 May 2012 10:09:59 +0200
+
+dolfin (1.0.0-5) unstable; urgency=low
+
+  * Add patches to fix problems with SWIG 2.0.5 and GCC 4.7.
+  * debian/control: Require UFC >= 2.0.5-2.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 14 May 2012 11:25:47 +0200
+
+dolfin (1.0.0-4) unstable; urgency=low
+
+  * debian/watch: Replace http with https in URL.
+  * debian/control:
+    - Add libcgal-dev to Build-Depends and Depends for binary package
+      libdolfin1.0-dev.
+    - Bump Standards-Version to 3.9.3 (no changes needed).
+  * debian/rules:
+    - Enable CGAL support.
+    - Call dh_numpy in binary-install/python-dolfin target to fix
+      lintian error missing-dependency-on-numpy-abi.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 20 Mar 2012 14:47:27 +0100
+
+dolfin (1.0.0-3) unstable; urgency=low
+
+  * Disable building with PETSc, SLEPc and SCOTCH on some arches.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 14 Feb 2012 11:46:11 +0100
+
+dolfin (1.0.0-2) unstable; urgency=low
+
+  * debian/control:
+    - Replace libpetsc3.1-dev and libslepc3.1-dev with libpetsc3.2-dev
+      and libslepc3.2-dev, respectively.
+    - Require libptscotch-dev, libpetsc3.2-dev and libslepc3.2-dev on
+      all arches.
+  * debian/rules: Help CMake find version 3.2 of PETSc and SLEPc by
+    defining PETSC_DIR and SLEPC_DIR variables, respectively.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 30 Jan 2012 11:45:31 +0100
+
+dolfin (1.0.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    - Bump version numbers for python-ufc, python-ffc, python-viper,
+      python-ufl and python-instant in Depends field for binary package
+      python-dolfin.
+    - Bump version numbers for ufc and python-ufc in Build-Depends and
+      in Depends field for binary package libdolfin1.0-dev.
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 08 Dec 2011 08:47:31 +0100
+
+dolfin (1.0-rc2-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: Bump version for ufc and python-ufc to 2.0.4.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 29 Nov 2011 11:44:52 +0100
+
+dolfin (1.0-rc1-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    - Update Homepage field.
+    - Add libboost-math-dev to Build-Depends and in Depends field for
+      binary package libdolfin1.0-dev.
+  * Disable Trilinos support (version >= 10.8.1 now required).
+  * Remove patch for building with Trilinos.
+  * Update debian/copyright and debian/copyright_hints.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 22 Nov 2011 12:10:02 +0100
+
+dolfin (1.0-beta2-1) unstable; urgency=low
+
+  * New upstream release.
+  * Add lintian override dolfin-dev: empty-binary-package.
+  * debian/control:
+    - Add libboost-mpi-dev in Build-Depends and in Depends field for
+      binary package libdolfin1.0-dev.
+    - Bump version numbers for dependencies ufc, python-ufc, python-ffc,
+      and python-ufl.
+  * debian/patches: Remove patch for importing PyTrilinos before DOLFIN
+    as this is now fixed upstream.
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 27 Oct 2011 13:17:47 +0200
+
+dolfin (1.0-beta-1) unstable; urgency=low
+
+  * New upstream release. This release fixes a large number of bugs and
+    brings many improvements. The most notable changes are improved
+    support for parallel computing and a redesigned and simplified
+    interface for solving variational problems.
+  * debian/control:
+    - Add libboost-iostreams-dev to Build-Depends and to Depends in -dev
+      package.
+    - Replace libdolfin0 with libdolfin1.0 and libdolfin0-dev with
+      libdolfin1.0-dev to follow library soname.
+    - Bump required version for ufc, python-ufc, python-ffc,
+      python-viper, python-ufl, and python-instant.
+    - Add provide, replace and conflict on libdolfin0-dev for binary
+      package libdolfin1.0-dev. Similarly for libdolfin1.0-dbg.
+  * Add patch for importing PyTrilinos before dolfin (closes: #631589).
+  * Rename libdolfin0.install to libdolfin1.0.install and
+    libdolfin0-dev.install to libdolfin1.0-dev.install to follow library
+    soname.
+
+ -- Johannes Ring <johannr@simula.no>  Wed, 17 Aug 2011 12:01:58 +0200
+
+dolfin (0.9.11-1) unstable; urgency=low
+
+  * New upstream release. This release moves to SWIG 2.0 and it
+    incorporates a significant number of bug fixes.
+  * debian/control:
+    - Bump Standards-Version to 3.9.2 (no changes needed).
+    - Replace swig with swig2.0 in Build-Depends.
+    - Add swig2.0 to Depends for binary package python-dolfin.
+    - Bump required version for ufc and python-ufc in Build-Depends.
+    - Bump required version for ufc, python-ufc, python-ffc, python-ufl
+      and python-instant in Depends for binary packages libdolfin0-dev
+      and python-dolfin.
+  * debian/rules:
+    - Set SWIG_EXECUTABLE to /usr/bin/swig2.0.
+    - Use DEB_COMPRESS_EXCLUDE_ALL instead of deprecated
+      DEB_COMPRESS_EXCLUDE.
+    - Include cdbs utils.mk rule for automated copyright checks.
+  * debian/copyright:
+    - Update for upstream license change to LGPLv3.
+    - Switch to DEP-5 format.
+  * Remove custom cdbs rules and licensecheck script for copyright check.
+  * Disable MPI on lam architectures (closes: #627172).
+  * Add patch to fix FTBFS when Trilinos is enabled (closes: #624925).
+
+ -- Johannes Ring <johannr@simula.no>  Wed, 18 May 2011 13:30:21 +0200
+
+dolfin (0.9.10-2) unstable; urgency=low
+
+  * Move from python-central to dh_python2 (closes: #616793).
+    - Remove python-central from Build-Depends.
+    - Bump minimum required python-all-dev package version to 2.6.6-3~.
+    - Remove XB-Python-Version line.
+    - Bump minimum required cdbs version to 0.4.90~.
+    - Replace XS-Python-Version with X-Python-Version.
+    - Replace call to dh_pycentral with dh_python2 in debian/rules.
+  * Build for all supported Python versions.
+  * Remove some unnecessary packages in Depends for binary packages
+    libdolfin0 and libdolfin0-dev.
+  * Add ufc and python-ufc in Depends for binary package libdolfin0-dev.
+  * Add python-ufc, python-ffc, python-viper, python-ufl python-instant,
+    and python-numpy in Depends for binary package python-dolfin.
+  * Disable building with PETSc and SLEPc on some architectures.
+  * Remove old Provides field for binary package python-dolfin.
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 15 Apr 2011 09:17:37 +0200
+
+dolfin (0.9.10-1) unstable; urgency=low
+
+  * New upstream release. This release fixes bug "FTBFS: error:
+    'SCOTCH_Dgraph' was not declared in this scope" (closes: #612602).
+  * debian/control:
+    - Add libslepc3.1-dev and libboost-thread-dev to Build-Depends and
+      Depends field in binary package libdolfin0-dev.
+    - Bump build dependency on python-ufc to >= 2.0.0.
+    - Remove Build-Depends-Indep field as upstream no longer ships the
+      user manual.
+    - Remove old fields Conflicts, Provides, and Replaces from
+      libdolfin0-dev, libdolfin0, libdolfin0-dbg, and python-dolfin.
+  * Remove all patches as they are now incorporated upstream.
+  * Add dolfin-plot and dolfin-version to debian/dolfin-bin.install.
+  * Remove .doc-base file since the user manual is removed by upstream.
+  * Remove targets clean and install/dolfin-doc from debian/rules since
+    they are no longer needed.
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 24 Feb 2011 10:34:44 +0100
+
+dolfin (0.9.9-4) unstable; urgency=low
+
+  * Update Homepage field in debian/control and Maintainer field in
+    debian/copyright.
+  * Add patch for generating correct pkg-config file dolfin.pc.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 11 Jan 2011 12:36:55 +0100
+
+dolfin (0.9.9-3) unstable; urgency=low
+
+  * Add patch from upstream to fix problem with the CMake config file
+    (dolfin-config.cmake) having the wrong path to the DOLFIN library.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 14 Sep 2010 18:45:39 +0200
+
+dolfin (0.9.9-2) unstable; urgency=low
+
+  * debian/rules: Make CMake skip adding runtime paths.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 14 Sep 2010 10:49:24 +0200
+
+dolfin (0.9.9-1) unstable; urgency=low
+
+  * New upstream release.
+  * Switch to CMake CDBS class:
+    - Replace scons with cmake in Build-Depends and in Suggests for
+      binary package dolfin-doc.
+    - Add cmake to Depends field for binary package libdolfin0-dev.
+    - Install CMake config file for DOLFIN with package libdolfin0-dev.
+  * debian/control:
+    - Update version for python-ufc in Build-Depends field.
+    - Update version for python-ufl in Depends field for binary package
+      libdolfin0-dev.
+    - Update version for ufc and python-ffc in Depends field for binary
+      package libdolfin0-dev.
+    - Bump Standards-Version to 3.9.1 (no changes needed).
+  * Add patches from upstream to help CMake find PETSc, SLEPc, and
+    Trilinos and for installing some missing utilities (dolfin-convert
+    and dolfin-order) and manual pages.
+  * Update debian/copyright and debian/copyright_hints.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 13 Sep 2010 11:45:17 +0200
+
+dolfin (0.9.8-3) unstable; urgency=low
+
+  * Disable Trilinos on non-supported platforms (closes: #590100).
+
+ -- Johannes Ring <johannr@simula.no>  Wed, 04 Aug 2010 16:47:38 +0200
+
+dolfin (0.9.8-2) unstable; urgency=low
+
+  * Fix generation of pkg-config file dolfin.pc.
+
+ -- Johannes Ring <johannr@simula.no>  Sun, 04 Jul 2010 20:41:45 +0200
+
+dolfin (0.9.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: 
+    - Update version for python-ufc in Build-Depends field.
+    - Update version for python-ufl in Depends field for binary package
+      libdolfin0-dev.
+    - Update version for ufc, python-ffc, and python-viper in Depends
+      field for binary package libdolfin0-dev.
+    - Add libarmadillo-dev to Build-Depends and Depends for binary
+      package libdolfin0-dev.
+  * Allow building against either version 3.0.0 or 3.1 of PETSc. 
+  * Remove patches (added upstream).
+  * Switch to dpkg-source 3.0 (quilt) format.
+  * Update debian/copyright and debian/copyright_hints.
+  * Enable Trilinos support.
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 02 Jul 2010 13:24:21 +0200
+
+dolfin (0.9.7-5) unstable; urgency=low
+
+  * Add patch from upstream to detect and build with SCOTCH.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 14 Jun 2010 13:15:04 +0200
+
+dolfin (0.9.7-4) unstable; urgency=low
+
+  * Add support for PETSc 3.1 (closes: #583419).
+  * Minor fix in Vcs fields in debian/control.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 07 Jun 2010 09:25:13 +0200
+
+dolfin (0.9.7-3) unstable; urgency=low
+
+  * debian/rules: Remove bashism (closes: #581470).
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 20 May 2010 10:27:06 +0200
+
+dolfin (0.9.7-2) unstable; urgency=low
+
+  * Package moved from pkg-scicomp to Debian Science.
+  * Enable building for multiple Python versions.
+  * debian/control:
+    - Replace python-dev with python-all-dev in Build-Depends.
+    - Update version dependencies for python-ufc, ufc, python-ffc, and
+      python-viper (closes: #571780).
+    - Replace libscotch-dev with libptscotch-dev in Build-Depends and in
+      Depends for binary package libdolfin0-dev.
+  * Add configure target to cdbs tweaks for scons.
+  * Rename binary package python-pydolfin0 to python-dolfin.
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 27 Apr 2010 17:21:22 +0200
+
+dolfin (0.9.7-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: Add pkg-config to Build-Depends and Depends in
+    binary package libdolfin0-dev.
+  * Do not build with GTS (support was removed upstream).
+  * Keep debian/copyright and debian/copyright_hints up to date.
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 18 Feb 2010 00:40:38 +0100
+
+dolfin (0.9.6-2) unstable; urgency=low
+
+  * Disable support for Trilinos for now.
+
+ -- Johannes Ring <johannr@simula.no>  Sat, 13 Feb 2010 09:55:48 +0100
+
+dolfin (0.9.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    - Add libtrilinos-dev to Build-Depends and Depends for binary
+      package libdolfin0-dev.
+    - Add python-pytrilinos to Build-Depends and Depends for binary
+      package python-pydolfin0.
+    - Bump Standards-Version to 3.8.4 (no changes needed).
+  * debian/rules:
+    - Enable building with Trilinos.
+    - Remove some old lintian fixes.
+    - Fix problem when generating pkg-config dolfin.pc in
+      install/libdolfin0-dev target.
+  * debian/copyright: Keep up-to-date with new and removed files.
+
+ -- Johannes Ring <johannr@simula.no>  Fri, 12 Feb 2010 10:27:02 +0100
+
+dolfin (0.9.5-1) unstable; urgency=low
+
+  * New upstream release. This release simplifies the use of Constants
+    and Expressions in both the C++ and Python interfaces, with the
+    automatic selection of function spaces from Python. Support for
+    computing eigenvalues of symmetric matrices has been improved and a
+    number of small bugs have been fixed.
+  * debian/watch: Update download URL.
+  * debian/copyright: Update for new and removed files.
+  * debian/rules: 
+    - Include new adaptivity demos in dolfin-doc package.
+    - Disable ParMETIS and MTL4 explicitly.
+  * Add debian/dolfin-doc.doc-base for DOLFIN user manual.
+  * debian/control: Slight modifications in package descriptions.
+  * debian/python-pydolfin0.install: Allow both site-packages and
+    dist-packages.
+
+ -- Johannes Ring <johannr@simula.no>  Thu, 10 Dec 2009 11:53:04 +0100
+
+dolfin (0.9.4-1) unstable; urgency=low
+
+  * New upstream release. This version cleans up the design of the
+    function class by adding a new abstraction for user-defined
+    functions called Expression. A number of minor bugfixes and
+    improvements have also been made.
+  * debian/watch: Update for new flat directory structure.
+  * Update debian/copyright.
+  * debian/rules: Use explicit paths to PETSc 3.0.0 and SLEPc 3.0.0.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 12 Oct 2009 14:13:18 +0200
+
+dolfin (0.9.3-1) unstable; urgency=low
+
+  * New upstream release. This version provides many new features,
+    improvements and bug fixes, including improved XML file handling,
+    improved Python support and compressed VTK file output. Experimental
+    parallel assembly and solve is now available, with fully distributed
+    meshes, parallel mesh partitioning and parallel IO.
+  * debian/control:
+    - Add DM-Upload-Allowed: yes.
+    - Bump debhelper version to 7.
+    - Bump Standards-Version to 3.8.3 (no changes needed).
+    - Add libboost-program-options-dev and libboost-filesystem-dev to
+      Build-Depends and to Depends for binary package libdolfin0-dev.
+  * debian/rules:
+    - Update for new 3 step build process.
+    - Build documentation.
+  * Update debian/copyright.
+  * Remove old patches (now included upstream).
+  * Remove (temporary) support for Trilinos because of #529807.
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 28 Sep 2009 09:21:05 +0200
+
+dolfin (0.9.2-2) unstable; urgency=low
+
+  * debian/control: 
+    - add build-dependency on libtrilinos-dev and
+      libboost-serialization-dev (closes: #540118). 
+    - add libtrilinos-dev to Depends field for -dev package.
+    - add python-pytrilinos to Depends field for python- package.
+    - change -dbg package section to debug (removes lintian warning).
+    - update Standard-Version to 3.8.2.
+  * debian/rules: enable building against Trilinos.
+  * debian/patches: add patch for build system to find Trilinos (taken
+    from upstream development repository).
+
+ -- Johannes Ring <johannr@simula.no>  Mon, 10 Aug 2009 16:03:52 +0200
+
+dolfin (0.9.2-1) unstable; urgency=low
+
+  * Initial release (Closes: #503082)
+
+ -- Johannes Ring <johannr@simula.no>  Tue, 16 Sep 2008 08:41:20 +0200
+

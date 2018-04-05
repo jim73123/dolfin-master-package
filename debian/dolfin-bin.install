@@ -1,0 +1,9 @@
+usr/bin/dolfin-convert
+usr/bin/dolfin-get-demos
+usr/bin/dolfin-order
+usr/bin/dolfin-plot
+usr/bin/dolfin-version
+usr/share/man/man1/dolfin-convert.1.gz
+usr/share/man/man1/dolfin-order.1.gz
+usr/share/man/man1/dolfin-plot.1.gz
+usr/share/man/man1/dolfin-version.1.gz
