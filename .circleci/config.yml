@@ -6,5 +6,14 @@ jobs:
     docker:
       - image: ubuntu:18.04
     steps:
+      - run: apt update
+      - run: apt install -y software-properties-common
+      - run: LANG=C.UTF-8 apt-add-repository -y ppa:nschloe/fenics-nightly
+      - run: apt update
+      - run: apt install build-essential
+      # install dependencies
+      # those could be handled with `mk-build-deps -i` once mk-build-deps
+      # supports -y
+      - run: apt install -y cmake dephelper dh-python gfortran libboost-chrono-dev libboost-dev libboost-filesystem-dev libboost-iostreams-dev libboost-math-dev libboost-mpi-dev libboost-program-options-dev libboost-serialization-dev libboost-thread-dev libboost-timer-dev libeigen3-dev libhdf5-mpi-dev libsuitesparse-dev libscotch-dev libxml2-dev mpi-default-dev petsc-dev slepc-dev python3-petsc4py python3-slepc4py pkg-config python3-dev python3-pkg-resources python3-ffc python3-dijitso python3-numpy python3-ply
       - checkout
-      - run: dpkg-deb --build dolfin
+      - run: cd dolfin && dpkg-buildpackage -us -uc
