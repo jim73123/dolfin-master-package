@@ -1,0 +1,9 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/dolfin
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - run: dpkg-deb --build dolfin
