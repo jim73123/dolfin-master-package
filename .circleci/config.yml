@@ -10,7 +10,7 @@ jobs:
       - run: apt install -y software-properties-common
       - run: LANG=C.UTF-8 apt-add-repository -y ppa:nschloe/fenics-nightly
       - run: apt update
-      - run: apt install build-essential
+      - run: apt install -y build-essential
       # install dependencies
       # those could be handled with `mk-build-deps -i` once mk-build-deps
       # supports -y
